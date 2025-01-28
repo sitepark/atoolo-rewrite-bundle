@@ -1,0 +1,19 @@
+parameters:
+
+services:
+
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  _instanceof:
+    Atoolo\Rewrite\Service\UrlRewriterHandler:
+      tags: ['atoolo_rewrite.url_rewrite_handler']
+
+  Atoolo\Rewrite\Controller\:
+    resource: '../src/Controller'
+
+  Atoolo\Rewrite\Service\:
+    resource: '../src/Service'
+
