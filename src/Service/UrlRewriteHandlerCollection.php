@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atoolo\Rewrite\Service;
 
+use Atoolo\Rewrite\Dto\Url;
 use Atoolo\Rewrite\Dto\UrlBuilder;
 use Atoolo\Rewrite\Dto\UrlRewriteOptions;
 use Atoolo\Rewrite\Dto\UrlRewriterHandlerContext;
@@ -24,7 +25,7 @@ class UrlRewriteHandlerCollection implements UrlRewriter
 
     public function rewrite(UrlRewriteType $type, string $origin, UrlRewriteOptions $options): string
     {
-        $url = (new UrlBuilder())->parse($origin)->build();
+        $url = Url::builder()->parse($origin)->build();
 
         $context = new UrlRewriterHandlerContext(
             origin: $url,

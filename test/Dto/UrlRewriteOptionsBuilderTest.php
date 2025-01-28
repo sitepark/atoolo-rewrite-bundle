@@ -20,4 +20,15 @@ class UrlRewriteOptionsBuilderTest extends TestCase
             'unexpected toFullyQualifiedUrl',
         );
     }
+
+    public function testLang(): void
+    {
+        $options = (new UrlRewriteOptionsBuilder())->lang('en')->build();
+
+        $this->assertEquals(
+            'en',
+            $options->lang,
+            'unexpected lang',
+        );
+    }
 }

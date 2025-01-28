@@ -14,9 +14,9 @@ class UrlBuilderTest extends TestCase
 {
     public function testParseUrl(): void
     {
-        $url = (new UrlBuilder())->parse('https://user:password@www.example.com/foo/bar?param1=1&param2[0]=2&param3[a]=3#hash')->build();
+        $url = Url::builder()->parse('https://user:password@www.example.com/foo/bar?param1=1&param2[0]=2&param3[a]=3#hash')->build();
 
-        $expected = (new UrlBuilder())
+        $expected = Url::builder()
             ->scheme('https')
             ->user('user')
             ->password('password')
@@ -40,7 +40,7 @@ class UrlBuilderTest extends TestCase
     public function testBuildWithUrlObject(): void
     {
 
-        $url = (new UrlBuilder())
+        $url = Url::builder()
             ->scheme('https')
             ->user('user')
             ->password('password')
@@ -54,12 +54,12 @@ class UrlBuilderTest extends TestCase
             ->fragment('hash')
             ->build();
 
-        $clone = (new UrlBuilder())
+        $clone = Url::builder()
             ->url($url)
             ->path('/foo/bar/baz')
             ->build();
 
-        $expected = (new UrlBuilder())
+        $expected = Url::builder()
             ->scheme('https')
             ->user('user')
             ->password('password')
@@ -82,7 +82,7 @@ class UrlBuilderTest extends TestCase
 
     public function testResetByNullQuery(): void
     {
-        $url = (new UrlBuilder())
+        $url = Url::builder()
             ->parse('https://www.example.com/?param1=1')
             ->query(null)
             ->build();
@@ -94,7 +94,7 @@ class UrlBuilderTest extends TestCase
 
     public function testAddParam(): void
     {
-        $url = (new UrlBuilder())
+        $url = Url::builder()
             ->parse('https://www.example.com/')
             ->param('param', 'value')
             ->build();

@@ -16,4 +16,9 @@ class UrlRewriteOptionsTest extends TestCase
         $options = UrlRewriteOptions::none();
         self::assertFalse($options->toFullyQualifiedUrl);
     }
+
+    public function testBuilder(): void
+    {
+        self::assertNotNull(UrlRewriteOptions::builder());
+    }
 }

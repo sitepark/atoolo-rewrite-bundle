@@ -28,9 +28,14 @@ class Url
         public readonly int $paramEncType,
     ) {}
 
+    public static function builder(): UrlBuilder
+    {
+        return new UrlBuilder();
+    }
+
     public function toBuilder(): UrlBuilder
     {
-        return (new UrlBuilder())->url($this);
+        return self::builder()->url($this);
     }
 
     /**

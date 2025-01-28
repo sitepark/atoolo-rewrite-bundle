@@ -12,6 +12,11 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(Url::class)]
 class UrlTest extends TestCase
 {
+    public function testBuilder(): void
+    {
+        $this->assertNotNull(Url::builder(), 'builder should not be null');
+    }
+
     public function testToBuilder(): void
     {
         $url = new Url(

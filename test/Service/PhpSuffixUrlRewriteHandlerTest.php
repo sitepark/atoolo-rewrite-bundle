@@ -20,13 +20,13 @@ class PhpSuffixUrlRewriteHandlerTest extends TestCase
     {
         $handler = new PhpSuffixUrlRewriteHandler();
 
-        $origin = (new UrlBuilder())->path('/foo/bar.php')->build();
+        $origin = Url::builder()->path('/foo/bar.php')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->path('/foo/bar')->build();
+        $expected = Url::builder()->path('/foo/bar')->build();
 
         $this->assertEquals(
             $expected,
@@ -39,13 +39,13 @@ class PhpSuffixUrlRewriteHandlerTest extends TestCase
     {
         $handler = new PhpSuffixUrlRewriteHandler();
 
-        $origin = (new UrlBuilder())->path('/foo/bar/index.php')->build();
+        $origin = Url::builder()->path('/foo/bar/index.php')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->path('/foo/bar/')->build();
+        $expected = Url::builder()->path('/foo/bar/')->build();
 
         $this->assertEquals(
             $expected,
@@ -58,13 +58,13 @@ class PhpSuffixUrlRewriteHandlerTest extends TestCase
     {
         $handler = new PhpSuffixUrlRewriteHandler();
 
-        $origin = (new UrlBuilder())->parse('https://www.example.com/foo/bar.php')->build();
+        $origin = Url::builder()->parse('https://www.example.com/foo/bar.php')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->parse('https://www.example.com/foo/bar.php')->build();
+        $expected = Url::builder()->parse('https://www.example.com/foo/bar.php')->build();
 
         $this->assertEquals(
             $expected,
@@ -77,13 +77,13 @@ class PhpSuffixUrlRewriteHandlerTest extends TestCase
     {
         $handler = new PhpSuffixUrlRewriteHandler();
 
-        $origin = (new UrlBuilder())->parse('/foo/bar.pdf')->build();
+        $origin = Url::builder()->parse('/foo/bar.pdf')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::MEDIA),
         );
 
-        $expected = (new UrlBuilder())->parse('/foo/bar.pdf')->build();
+        $expected = Url::builder()->parse('/foo/bar.pdf')->build();
 
         $this->assertEquals(
             $expected,
@@ -96,13 +96,13 @@ class PhpSuffixUrlRewriteHandlerTest extends TestCase
     {
         $handler = new PhpSuffixUrlRewriteHandler();
 
-        $origin = (new UrlBuilder())->build();
+        $origin = Url::builder()->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->build();
+        $expected = Url::builder()->build();
 
         $this->assertEquals(
             $expected,
@@ -115,13 +115,13 @@ class PhpSuffixUrlRewriteHandlerTest extends TestCase
     {
         $handler = new PhpSuffixUrlRewriteHandler();
 
-        $origin = (new UrlBuilder())->path('/WEB-IES/test.php')->build();
+        $origin = Url::builder()->path('/WEB-IES/test.php')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->path('/WEB-IES/test.php')->build();
+        $expected = Url::builder()->path('/WEB-IES/test.php')->build();
 
         $this->assertEquals(
             $expected,
@@ -134,13 +134,13 @@ class PhpSuffixUrlRewriteHandlerTest extends TestCase
     {
         $handler = new PhpSuffixUrlRewriteHandler();
 
-        $origin = (new UrlBuilder())->path('/foo/bar')->build();
+        $origin = Url::builder()->path('/foo/bar')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->path('/foo/bar')->build();
+        $expected = Url::builder()->path('/foo/bar')->build();
 
         $this->assertEquals(
             $expected,

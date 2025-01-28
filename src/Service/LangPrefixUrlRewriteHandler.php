@@ -8,6 +8,7 @@ use Atoolo\Rewrite\Dto\Url;
 use Atoolo\Rewrite\Dto\UrlRewriterHandlerContext;
 use Atoolo\Rewrite\Dto\UrlRewriteType;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 #[AsAlias(id: 'atoolo_rewrite.url_rewrite_handler.lang_prefix')]
@@ -16,14 +17,26 @@ class LangPrefixUrlRewriteHandler implements UrlRewriterHandler
     private static string $SUPPORTED_LANGUAGE_PATTERN =
         '#^\/(ar|bg|cs|da|de|el|en|es|et|fi|fr|hu|id|it|ja|ko|lt|lv|nb|nl|pl|pt|ro|ru|sk|sl|sv|tr|uk|zh)([\/]?.*)$#';
 
-    private ?string $lang;
+    private ?string $defaultLang = null;
+
+    private bool $redirectToDefaultLangPrefix;
+
+    private ?string $pathInfoLang;
 
     public function __construct(
         RequestStack $requestStack,
+        #[Autowire(param: 'atoolo_rewrite.url_rewrite_handler.lang_prefix.default')]
         string $prefixForDefaultLang,
     ) {
-        $lang = $this->getLangByPathInfo($requestStack);
-        $this->lang = $this->considerPrefixForDefaultLang($lang, $prefixForDefaultLang);
+        $this->pathInfoLang = $this->getLangByPathInfo($requestStack);
+
+        if (!empty($prefixForDefaultLang)) {
+            $parts = explode(':', $prefixForDefaultLang);
+            if (count($parts) === 2) {
+                $this->defaultLang = $parts[0];
+                $this->redirectToDefaultLangPrefix = filter_var($parts[1], FILTER_VALIDATE_BOOLEAN);
+            }
+        }
     }
 
     public function rewrite(
@@ -40,13 +53,13 @@ class LangPrefixUrlRewriteHandler implements UrlRewriterHandler
             return $url;
         }
 
-        if ($this->lang === null) {
+        $langPathPrefix = $this->getLangPathPrefix($context->options->lang ?? $this->pathInfoLang);
+
+        if ($langPathPrefix === '') {
             return $url;
         }
 
-        $langPrefix = empty($this->lang) ? '' : '/' . $this->lang;
-
-        return $url->toBuilder()->path($langPrefix . ($url->path ?? '/'))->build();
+        return $url->toBuilder()->path($langPathPrefix . ($url->path ?? '/'))->build();
     }
 
     private function getLangByPathInfo(RequestStack $requestStack): ?string
@@ -68,30 +81,22 @@ class LangPrefixUrlRewriteHandler implements UrlRewriterHandler
         return $matches[1];
     }
 
-    private function considerPrefixForDefaultLang(
-        ?string $lang,
-        string $prefixForDefaultLang,
-    ): ?string {
+    private function getLangPathPrefix(?string $lang): string
+    {
 
-        if (empty($prefixForDefaultLang)) {
-            return $lang;
+        $langPath = $lang;
+
+        if ($lang !== null && $this->defaultLang === $lang && !$this->redirectToDefaultLangPrefix) {
+            $langPath = '';
+        }
+        if ($lang === null && $this->defaultLang !== null && $this->redirectToDefaultLangPrefix) {
+            $langPath = $this->defaultLang;
         }
 
-        $parts = explode(':', $prefixForDefaultLang);
-        if (count($parts) !== 2) {
-            return $lang;
-        }
-
-        $defaultLang = $parts[0];
-        $redirectToLanguagePrefix  = filter_var($parts[1], FILTER_VALIDATE_BOOLEAN);
-
-        if ($lang !== null && $defaultLang === $lang && !$redirectToLanguagePrefix) {
+        if (empty($langPath)) {
             return '';
         }
-        if ($lang === null && $redirectToLanguagePrefix) {
-            return $defaultLang;
-        }
 
-        return $lang;
+        return '/' . $langPath;
     }
 }

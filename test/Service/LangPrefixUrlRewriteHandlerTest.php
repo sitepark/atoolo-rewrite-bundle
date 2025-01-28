@@ -42,13 +42,13 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
             'de:true',
         );
 
-        $origin = (new UrlBuilder())->path('/foo/bar.php')->build();
+        $origin = Url::builder()->path('/foo/bar.php')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->path('/en/foo/bar.php')->build();
+        $expected = Url::builder()->path('/en/foo/bar.php')->build();
 
         $this->assertEquals(
             $expected,
@@ -60,20 +60,20 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
     public function testRewriteWithPrefixForDefaultLang(): void
     {
 
-        $this->request->method('getPathInfo')->willReturn('/de/foo/bar.php');
+        $this->request->method('getPathInfo')->willReturn('/foo/bar.php');
 
         $handler = new LangPrefixUrlRewriteHandler(
             $this->requestStack,
             'de:true',
         );
 
-        $origin = (new UrlBuilder())->path('/foo/bar.php')->build();
+        $origin = Url::builder()->path('/foo/bar.php')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->path('/de/foo/bar.php')->build();
+        $expected = Url::builder()->path('/de/foo/bar.php')->build();
 
         $this->assertEquals(
             $expected,
@@ -92,13 +92,13 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
             'de:false',
         );
 
-        $origin = (new UrlBuilder())->path('/foo/bar.php')->build();
+        $origin = Url::builder()->path('/foo/bar.php')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->path('/foo/bar.php')->build();
+        $expected = Url::builder()->path('/foo/bar.php')->build();
 
         $this->assertEquals(
             $expected,
@@ -115,13 +115,13 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
             'de:true',
         );
 
-        $origin = (new UrlBuilder())->parse('https://www.example.com/foo/bar.php')->build();
+        $origin = Url::builder()->parse('https://www.example.com/foo/bar.php')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->parse('https://www.example.com/foo/bar.php')->build();
+        $expected = Url::builder()->parse('https://www.example.com/foo/bar.php')->build();
 
         $this->assertEquals(
             $expected,
@@ -138,13 +138,13 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
             'de:true',
         );
 
-        $origin = (new UrlBuilder())->path('/foo/bar.pdf')->build();
+        $origin = Url::builder()->path('/foo/bar.pdf')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::MEDIA),
         );
 
-        $expected = (new UrlBuilder())->path('/foo/bar.pdf')->build();
+        $expected = Url::builder()->path('/foo/bar.pdf')->build();
 
         $this->assertEquals(
             $expected,
@@ -164,13 +164,13 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
             'de:false',
         );
 
-        $origin = (new UrlBuilder())->path('/foo/bar.php')->build();
+        $origin = Url::builder()->path('/foo/bar.php')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->path('/foo/bar.php')->build();
+        $expected = Url::builder()->path('/foo/bar.php')->build();
 
         $this->assertEquals(
             $expected,
@@ -190,13 +190,13 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
             '',
         );
 
-        $origin = (new UrlBuilder())->path('/foo/bar.php')->build();
+        $origin = Url::builder()->path('/foo/bar.php')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->path('/foo/bar.php')->build();
+        $expected = Url::builder()->path('/foo/bar.php')->build();
 
         $this->assertEquals(
             $expected,
@@ -216,13 +216,13 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
             'invalid-format',
         );
 
-        $origin = (new UrlBuilder())->path('/foo/bar.php')->build();
+        $origin = Url::builder()->path('/foo/bar.php')->build();
         $url = $handler->rewrite(
             $origin,
             $this->createContext($origin, UrlRewriteType::LINK),
         );
 
-        $expected = (new UrlBuilder())->path('/foo/bar.php')->build();
+        $expected = Url::builder()->path('/foo/bar.php')->build();
 
         $this->assertEquals(
             $expected,
