@@ -15,9 +15,6 @@ services:
     Atoolo\Rewrite\Service\UrlRewriterHandler:
       tags: ['atoolo_rewrite.url_rewrite_handler']
 
-  Atoolo\Rewrite\Controller\:
-    resource: '../src/Controller'
-
   Atoolo\Rewrite\Service\:
     resource: '../src/Service'
 
