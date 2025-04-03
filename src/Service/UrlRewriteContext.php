@@ -16,6 +16,8 @@ class UrlRewriteContext
 
     private ?string $basePath = null;
 
+    private ?string $resourceLocation = null;
+
     public function __construct(RequestStack $requestStack)
     {
         $request = $requestStack->getCurrentRequest();
@@ -41,6 +43,11 @@ class UrlRewriteContext
         $this->basePath = $basePath;
     }
 
+    public function setResourceLocation(string $resourceLocation): void
+    {
+        $this->resourceLocation = $resourceLocation;
+    }
+
     public function getScheme(): ?string
     {
         return $this->scheme;
@@ -54,5 +61,10 @@ class UrlRewriteContext
     public function getBasePath(): ?string
     {
         return $this->basePath;
+    }
+
+    public function getResourceLocation(): ?string
+    {
+        return $this->resourceLocation;
     }
 }

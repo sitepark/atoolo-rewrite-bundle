@@ -77,4 +77,15 @@ class UrlRewriteContextTest extends TestCase
         $this->assertSame('/base/path', $context->getBasePath());
     }
 
+    /**
+     * @throws Exception
+     */
+    public function testSetResourceLocation(): void
+    {
+        $requestStack = $this->createMock(RequestStack::class);
+        $context = new UrlRewriteContext($requestStack);
+
+        $context->setResourceLocation('/path');
+        $this->assertSame('/path', $context->getResourceLocation());
+    }
 }
