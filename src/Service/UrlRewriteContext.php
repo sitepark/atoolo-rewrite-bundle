@@ -18,6 +18,8 @@ class UrlRewriteContext
 
     private ?string $resourceLocation = null;
 
+    private bool $sameNavigation = false;
+
     public function __construct(RequestStack $requestStack)
     {
         $request = $requestStack->getCurrentRequest();
@@ -66,5 +68,15 @@ class UrlRewriteContext
     public function getResourceLocation(): ?string
     {
         return $this->resourceLocation;
+    }
+
+    public function setSameNavigation(bool $sameNavigation): void
+    {
+        $this->sameNavigation = $sameNavigation;
+    }
+
+    public function isSameNavigation(): bool
+    {
+        return $this->sameNavigation;
     }
 }

@@ -36,10 +36,22 @@ class SameNavigationUrlRewriteHandlerTest extends TestCase
         $this->handlerContext = $this->createStub(UrlRewriterHandlerContext::class);
     }
 
+    public function testRewriteWithIsNotSameNavigation(): void
+    {
+        $url = Url::builder()->build();
+
+        $this->urlRewriteContext->method('isSameNavigation')->willReturn(false);
+
+        $result = $this->handler->rewrite($url, $this->handlerContext);
+
+        $this->assertSame($url, $result);
+    }
+
     public function testRewriteWithNullResourceLocation(): void
     {
         $url = Url::builder()->build();
 
+        $this->urlRewriteContext->method('isSameNavigation')->willReturn(true);
         $this->urlRewriteContext->method('getResourceLocation')->willReturn(null);
 
         $result = $this->handler->rewrite($url, $this->handlerContext);
@@ -50,6 +62,7 @@ class SameNavigationUrlRewriteHandlerTest extends TestCase
     public function testRewriteWithNonNullHost(): void
     {
         $url = Url::builder()->host('www.example.com')->build();
+        $this->urlRewriteContext->method('isSameNavigation')->willReturn(true);
         $this->urlRewriteContext->method('getResourceLocation')->willReturn('/path');
         $result = $this->handler->rewrite($url, $this->handlerContext);
 
@@ -59,6 +72,7 @@ class SameNavigationUrlRewriteHandlerTest extends TestCase
     public function testRewriteWithEmptyPath(): void
     {
         $url = Url::builder()->path('')->build();
+        $this->urlRewriteContext->method('isSameNavigation')->willReturn(true);
         $this->urlRewriteContext->method('getResourceLocation')->willReturn('/path');
         $result = $this->handler->rewrite($url, $this->handlerContext);
 
@@ -69,6 +83,7 @@ class SameNavigationUrlRewriteHandlerTest extends TestCase
     {
         $url = Url::builder()->path('/path/bar')->build();
 
+        $this->urlRewriteContext->method('isSameNavigation')->willReturn(true);
         $this->urlRewriteContext->method('getResourceLocation')->willReturn('/path/foo');
         $this->pParameterService->method('getPParameterForForeignParent')->willReturn('pValue');
 

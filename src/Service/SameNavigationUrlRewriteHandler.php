@@ -24,6 +24,9 @@ class SameNavigationUrlRewriteHandler implements UrlRewriterHandler
         Url $url,
         UrlRewriterHandlerContext $context,
     ): Url {
+        if ($this->urlRewriteContext->isSameNavigation() === false) {
+            return $url;
+        }
         if ($this->urlRewriteContext->getResourceLocation() === null) {
             return $url;
         }

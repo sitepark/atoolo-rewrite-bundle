@@ -88,4 +88,14 @@ class UrlRewriteContextTest extends TestCase
         $context->setResourceLocation('/path');
         $this->assertSame('/path', $context->getResourceLocation());
     }
+
+    public function testSetSameNavigation(): void
+    {
+        $requestStack = $this->createMock(RequestStack::class);
+        $context = new UrlRewriteContext($requestStack);
+
+        $context->setSameNavigation(true);
+        $this->assertTrue($context->isSameNavigation());
+    }
+
 }
