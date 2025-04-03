@@ -15,7 +15,8 @@
         "symfony/dependency-injection": "^6.3 || ^7.0",
         "symfony/framework-bundle": "^6.3 || ^7.1",
         "symfony/http-kernel": "^6.3 || ^7.0",
-        "symfony/yaml": "^6.3 || ^7.0"
+        "symfony/yaml": "^6.3 || ^7.0",
+        "atoolo/resource-bundle": "dev-main"
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
