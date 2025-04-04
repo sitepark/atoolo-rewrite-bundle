@@ -8,6 +8,7 @@ use Atoolo\Resource\ResourceLocation;
 use Atoolo\Resource\Service\PParameterService;
 use Atoolo\Rewrite\Dto\Url;
 use Atoolo\Rewrite\Dto\UrlRewriterHandlerContext;
+use Atoolo\Rewrite\Dto\UrlRewriteType;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -24,6 +25,9 @@ class SameNavigationUrlRewriteHandler implements UrlRewriterHandler
         Url $url,
         UrlRewriterHandlerContext $context,
     ): Url {
+        if ($context->type !== UrlRewriteType::LINK) {
+            return $url;
+        }
         if ($this->urlRewriteContext->isSameNavigation() === false) {
             return $url;
         }

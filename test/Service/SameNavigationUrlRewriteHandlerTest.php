@@ -6,7 +6,9 @@ namespace Atoolo\Rewrite\Test\Service;
 
 use Atoolo\Resource\Service\PParameterService;
 use Atoolo\Rewrite\Dto\Url;
+use Atoolo\Rewrite\Dto\UrlRewriteOptions;
 use Atoolo\Rewrite\Dto\UrlRewriterHandlerContext;
+use Atoolo\Rewrite\Dto\UrlRewriteType;
 use Atoolo\Rewrite\Service\SameNavigationUrlRewriteHandler;
 use Atoolo\Rewrite\Service\UrlRewriteContext;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -33,7 +35,28 @@ class SameNavigationUrlRewriteHandlerTest extends TestCase
             $this->urlRewriteContext,
             $this->pParameterService,
         );
-        $this->handlerContext = $this->createStub(UrlRewriterHandlerContext::class);
+        $this->handlerContext = new UrlRewriterHandlerContext(
+            URL::builder()->build(),
+            UrlRewriteType::LINK,
+            new UrlRewriteOptions(false, null),
+        );
+    }
+
+    public function testRewriteWithNonLinkType(): void
+    {
+        $url = Url::builder()->build();
+
+        $this->urlRewriteContext->method('isSameNavigation')->willReturn(false);
+
+        $handlerContext = new UrlRewriterHandlerContext(
+            URL::builder()->build(),
+            UrlRewriteType::IMAGE,
+            new UrlRewriteOptions(false, null),
+        );
+
+        $result = $this->handler->rewrite($url, $handlerContext);
+
+        $this->assertSame($url, $result);
     }
 
     public function testRewriteWithIsNotSameNavigation(): void
