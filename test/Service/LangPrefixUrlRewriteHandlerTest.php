@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Atoolo\Rewrite\Test\Service;
 
+use Atoolo\Resource\ResourceChannel;
+use Atoolo\Resource\ResourceTenant;
 use Atoolo\Rewrite\Dto\Url;
-use Atoolo\Rewrite\Dto\UrlBuilder;
 use Atoolo\Rewrite\Dto\UrlRewriteOptions;
 use Atoolo\Rewrite\Dto\UrlRewriterHandlerContext;
 use Atoolo\Rewrite\Dto\UrlRewriteType;
@@ -21,6 +22,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
 {
     private RequestStack $requestStack;
     private Request $request;
+    private ResourceChannel $resourceChannel;
 
     /**
      * @throws Exception
@@ -30,6 +32,21 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
         $this->request = $this->createStub(Request::class);
         $this->requestStack = $this->createStub(RequestStack::class);
         $this->requestStack->method('getCurrentRequest')->willReturn($this->request);
+        $this->resourceChannel = new ResourceChannel(
+            id: '',
+            name: '',
+            anchor: '',
+            serverName: '',
+            isPreview: false,
+            nature: '',
+            locale: '',
+            baseDir: '',
+            resourceDir: '',
+            configDir: '',
+            searchIndex: '',
+            translationLocales: ['en_US', 'it_IT'],
+            tenant: $this->createMock(ResourceTenant::class),
+        );
     }
 
     public function testRewriteLangPrefix(): void
@@ -40,6 +57,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
         $handler = new LangPrefixUrlRewriteHandler(
             $this->requestStack,
             'de:true',
+            $this->resourceChannel,
         );
 
         $origin = Url::builder()->path('/foo/bar.php')->build();
@@ -57,6 +75,48 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
         );
     }
 
+    public function testRewriteLangPrefixWithoutTranslationLocales(): void
+    {
+
+        $resourceChannel = new ResourceChannel(
+            id: '',
+            name: '',
+            anchor: '',
+            serverName: '',
+            isPreview: false,
+            nature: '',
+            locale: '',
+            baseDir: '',
+            resourceDir: '',
+            configDir: '',
+            searchIndex: '',
+            translationLocales: [],
+            tenant: $this->createMock(ResourceTenant::class),
+        );
+
+        $this->request->method('getPathInfo')->willReturn('/en/foo/bar.php');
+
+        $handler = new LangPrefixUrlRewriteHandler(
+            $this->requestStack,
+            'de:true',
+            $resourceChannel,
+        );
+
+        $origin = Url::builder()->path('/foo/bar.php')->build();
+        $url = $handler->rewrite(
+            $origin,
+            $this->createContext($origin, UrlRewriteType::LINK),
+        );
+
+        $expected = Url::builder()->path('/foo/bar.php')->build();
+
+        $this->assertEquals(
+            $expected,
+            $url,
+            'The URL should be rewritten by the handler.',
+        );
+    }
+
     public function testRewriteWithPrefixForDefaultLang(): void
     {
 
@@ -65,6 +125,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
         $handler = new LangPrefixUrlRewriteHandler(
             $this->requestStack,
             'de:true',
+            $this->resourceChannel,
         );
 
         $origin = Url::builder()->path('/foo/bar.php')->build();
@@ -90,6 +151,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
         $handler = new LangPrefixUrlRewriteHandler(
             $this->requestStack,
             'de:false',
+            $this->resourceChannel,
         );
 
         $origin = Url::builder()->path('/foo/bar.php')->build();
@@ -113,6 +175,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
         $handler = new LangPrefixUrlRewriteHandler(
             $this->requestStack,
             'de:true',
+            $this->resourceChannel,
         );
 
         $origin = Url::builder()->parse('https://www.example.com/foo/bar.php')->build();
@@ -136,6 +199,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
         $handler = new LangPrefixUrlRewriteHandler(
             $this->requestStack,
             'de:true',
+            $this->resourceChannel,
         );
 
         $origin = Url::builder()->path('/foo/bar.pdf')->build();
@@ -162,6 +226,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
         $handler = new LangPrefixUrlRewriteHandler(
             $this->createStub(RequestStack::class),
             'de:false',
+            $this->resourceChannel,
         );
 
         $origin = Url::builder()->path('/foo/bar.php')->build();
@@ -188,6 +253,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
         $handler = new LangPrefixUrlRewriteHandler(
             $this->createStub(RequestStack::class),
             '',
+            $this->resourceChannel,
         );
 
         $origin = Url::builder()->path('/foo/bar.php')->build();
@@ -214,6 +280,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
         $handler = new LangPrefixUrlRewriteHandler(
             $this->createStub(RequestStack::class),
             'invalid-format',
+            $this->resourceChannel,
         );
 
         $origin = Url::builder()->path('/foo/bar.php')->build();
