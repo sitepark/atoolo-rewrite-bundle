@@ -36,7 +36,7 @@ class SameNavigationUrlRewriteHandlerTest extends TestCase
             $this->pParameterService,
         );
         $this->handlerContext = new UrlRewriterHandlerContext(
-            URL::builder()->build(),
+            URL::builder()->path('/path/foo')->build(),
             UrlRewriteType::LINK,
             new UrlRewriteOptions(false, null),
         );

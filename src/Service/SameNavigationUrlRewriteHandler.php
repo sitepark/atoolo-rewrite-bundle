@@ -43,7 +43,7 @@ class SameNavigationUrlRewriteHandler implements UrlRewriterHandler
 
         $pParameter = $this->pParameterService->getPParameterForForeignParent(
             ResourceLocation::of($this->urlRewriteContext->getResourceLocation()),
-            ResourceLocation::ofPath($url->path),
+            ResourceLocation::ofPath($context->origin->path ?? '/'),
         );
 
         return $url->toBuilder()->param('p', $pParameter)->build();
