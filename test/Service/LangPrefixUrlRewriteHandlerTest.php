@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atoolo\Rewrite\Test\Service;
 
+use Atoolo\Resource\DataBag;
 use Atoolo\Resource\ResourceChannel;
 use Atoolo\Resource\ResourceTenant;
 use Atoolo\Rewrite\Dto\Url;
@@ -45,6 +46,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
             configDir: '',
             searchIndex: '',
             translationLocales: ['en_US', 'it_IT'],
+            attributes: new DataBag([]),
             tenant: $this->createMock(ResourceTenant::class),
         );
     }
@@ -91,6 +93,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
             configDir: '',
             searchIndex: '',
             translationLocales: [],
+            attributes: new DataBag([]),
             tenant: $this->createMock(ResourceTenant::class),
         );
 
