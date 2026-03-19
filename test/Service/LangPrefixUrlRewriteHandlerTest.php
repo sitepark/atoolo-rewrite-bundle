@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Atoolo\Rewrite\Test\Service;
 
-use Atoolo\Resource\DataBag;
 use Atoolo\Resource\LangPath;
 use Atoolo\Resource\ResourceChannel;
-use Atoolo\Resource\ResourceTenant;
 use Atoolo\Resource\Service\LangPathService;
 use Atoolo\Rewrite\Dto\Url;
 use Atoolo\Rewrite\Dto\UrlRewriteOptions;
@@ -36,22 +34,9 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
         $this->request = $this->createStub(Request::class);
         $this->requestStack = $this->createStub(RequestStack::class);
         $this->requestStack->method('getCurrentRequest')->willReturn($this->request);
-        $this->resourceChannel = new ResourceChannel(
-            id: '',
-            name: '',
-            anchor: '',
-            serverName: '',
-            isPreview: false,
-            nature: '',
-            locale: '',
-            baseDir: '',
-            resourceDir: '',
-            configDir: '',
-            searchIndex: '',
-            translationLocales: ['en_US', 'it_IT'],
-            attributes: new DataBag([]),
-            tenant: $this->createMock(ResourceTenant::class),
-        );
+        $this->resourceChannel = ResourceChannel::create([
+            'translationLocales' => ['en_US', 'it_IT'],
+        ]);
         $this->langPathService = $this->createMock(LangPathService::class);
     }
 
@@ -86,22 +71,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
     public function testRewriteLangPrefixWithoutTranslationLocales(): void
     {
 
-        $resourceChannel = new ResourceChannel(
-            id: '',
-            name: '',
-            anchor: '',
-            serverName: '',
-            isPreview: false,
-            nature: '',
-            locale: '',
-            baseDir: '',
-            resourceDir: '',
-            configDir: '',
-            searchIndex: '',
-            translationLocales: [],
-            attributes: new DataBag([]),
-            tenant: $this->createMock(ResourceTenant::class),
-        );
+        $resourceChannel = ResourceChannel::create([]);
 
         $this->request->method('getPathInfo')->willReturn('/en/foo/bar.php');
 
@@ -328,22 +298,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
 
     public function testGetLangFromPathReturnsNullWhenPatternIsNull(): void
     {
-        $resourceChannel = new ResourceChannel(
-            id: '',
-            name: '',
-            anchor: '',
-            serverName: '',
-            isPreview: false,
-            nature: '',
-            locale: '',
-            baseDir: '',
-            resourceDir: '',
-            configDir: '',
-            searchIndex: '',
-            translationLocales: [],
-            attributes: new DataBag([]),
-            tenant: $this->createMock(ResourceTenant::class),
-        );
+        $resourceChannel = ResourceChannel::create([]);
 
         $handler = new LangPrefixUrlRewriteHandler(
             $this->createStub(RequestStack::class),
