@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Atoolo\Rewrite\Service;
 
 use Atoolo\Resource\ResourceChannel;
+use Atoolo\Resource\Service\LangPathService;
 use Atoolo\Rewrite\Dto\Url;
 use Atoolo\Rewrite\Dto\UrlRewriterHandlerContext;
 use Atoolo\Rewrite\Dto\UrlRewriteType;
@@ -30,6 +31,8 @@ class LangPrefixUrlRewriteHandler implements UrlRewriterHandler
         string $prefixForDefaultLang,
         #[Autowire(service: 'atoolo_resource.resource_channel')]
         ResourceChannel $resourceChannel,
+        #[Autowire(service: 'atoolo_resource.lang_path_service')]
+        private readonly LangPathService $langPathService,
     ) {
         if (!empty($prefixForDefaultLang)) {
             $parts = explode(':', $prefixForDefaultLang);
@@ -43,7 +46,7 @@ class LangPrefixUrlRewriteHandler implements UrlRewriterHandler
             $resourceChannel->translationLocales,
         );
 
-        $this->pathInfoLang = $this->getLangByPathInfo($requestStack);
+        $this->pathInfoLang = $this->getLangByRequestPathInfo($requestStack);
     }
 
     public function rewrite(
@@ -65,13 +68,23 @@ class LangPrefixUrlRewriteHandler implements UrlRewriterHandler
             return $url;
         }
 
+        $langPath = $this->langPathService->parse($url->path ?? '/');
+
         $langPathPrefix = $this->getLangPathPrefix($context->options->lang ?? $this->pathInfoLang);
 
         if ($langPathPrefix === '') {
+            if ($langPath->lang === null) {
+                return $url;
+            }
+            // url without language prefix
+            return $url->toBuilder()->path($langPath->path)->build();
+        }
+
+        if ($langPathPrefix === $langPath->lang) {
             return $url;
         }
 
-        return $url->toBuilder()->path($langPathPrefix . ($url->path ?? '/'))->build();
+        return $url->toBuilder()->path($langPathPrefix . ($langPath->path ?? '/'))->build();
     }
 
     /**
@@ -95,7 +108,7 @@ class LangPrefixUrlRewriteHandler implements UrlRewriterHandler
         return rtrim($pattern, '|') . ')([\/]?.*)$#';
     }
 
-    private function getLangByPathInfo(RequestStack $requestStack): ?string
+    private function getLangByRequestPathInfo(RequestStack $requestStack): ?string
     {
         $request = $requestStack->getCurrentRequest();
 
@@ -107,9 +120,18 @@ class LangPrefixUrlRewriteHandler implements UrlRewriterHandler
             return null;
         }
 
+        return $this->getLangFromPath($request->getPathInfo());
+    }
+
+    private function getLangFromPath(string $path): ?string
+    {
+        if ($this->supportedLanguagePattern === null) {
+            return null;
+        }
+
         if (preg_match(
             $this->supportedLanguagePattern,
-            $request->getPathInfo(),
+            $path,
             $matches,
         ) === 0) {
             return null;
