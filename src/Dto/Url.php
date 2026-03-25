@@ -120,9 +120,9 @@ class Url
         }
 
         if (
-            str_starts_with($path, '/') &&
-            !str_contains($path, '/../') &&
-            !str_contains($path, '/./')
+            str_starts_with($path, '/')
+            && !str_contains($path, '/../')
+            && !str_contains($path, '/./')
         ) {
             return $builder->build();
         }
