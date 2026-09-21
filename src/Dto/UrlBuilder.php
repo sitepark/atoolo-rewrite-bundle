@@ -94,10 +94,14 @@ class UrlBuilder
             return $this;
         }
 
-        $params = [];
-        parse_str($query, $params);
+        $parsed = [];
+        parse_str($query, $parsed);
 
-        /** @var array<string,mixed> $params */
+        // parse_str yields int keys for numeric parameter names
+        $params = [];
+        foreach ($parsed as $key => $value) {
+            $params[(string) $key] = $value;
+        }
         $this->params = $params;
 
         return $this;
