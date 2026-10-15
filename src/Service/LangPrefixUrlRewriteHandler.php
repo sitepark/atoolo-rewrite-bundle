@@ -80,7 +80,7 @@ class LangPrefixUrlRewriteHandler implements UrlRewriterHandler
             return $url->toBuilder()->path($langPath->path)->build();
         }
 
-        if ($langPathPrefix === $langPath->lang) {
+        if ($langPathPrefix === '/' . $langPath->lang) {
             return $url;
         }
 

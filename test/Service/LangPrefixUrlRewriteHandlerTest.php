@@ -44,7 +44,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
     {
 
         $this->request->method('getPathInfo')->willReturn('/en/foo/bar.php');
-        $this->langPathService->method('parse')->willReturn(new LangPath('en', 'en_US', '/foo/bar.php'));
+        $this->langPathService->method('parse')->willReturn(new LangPath(null, null, '/foo/bar.php'));
 
         $handler = new LangPrefixUrlRewriteHandler(
             $this->requestStack,
@@ -345,7 +345,7 @@ class LangPrefixUrlRewriteHandlerTest extends TestCase
 
     public function testRewriteRetainsUrlWhenLangPrefixAlreadyMatches(): void
     {
-        $this->langPathService->method('parse')->willReturn(new LangPath('/en', 'en_US', '/foo/bar.php'));
+        $this->langPathService->method('parse')->willReturn(new LangPath('en', 'en_US', '/foo/bar.php'));
         $this->request->method('getPathInfo')->willReturn('/en/foo/bar.php');
 
         $handler = new LangPrefixUrlRewriteHandler(
